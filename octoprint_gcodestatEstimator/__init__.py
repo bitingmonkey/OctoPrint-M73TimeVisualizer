@@ -22,11 +22,7 @@ class GcodestatPrintTimeEstimator(PrintTimeEstimator):
 
 class GcodestatPrintTimeEstimatorPlugin(octoprint.plugin.StartupPlugin):
 
-    pw = re.compile('M117 ([0-9]+)%+ Remaining ([0-9]+) weeks ([0-9]+) days \( ([0-9]+):([0-9]+):([0-9]+) \)')
-    pd = re.compile('M117 ([0-9]+)%+ Remaining ([0-9]+) days \( ([0-9]+):([0-9]+):([0-9]+) \)')
-    ph = re.compile('M117 ([0-9]+)%+ Remaining \( ([0-9]+):([0-9]+):([0-9]+) \)')
-    pm = re.compile('M117 ([0-9]+)%+ Remaining \( ([0-9]+):([0-9]+) \)')
-    ps = re.compile('M117 ([0-9]+)%+ Remaining \( ([0-9]+) \)')
+    pw = re.compile('M73 P([0-9]+) R([0-9]+)')
 
     def __init__(self):
         self._estimator = None
@@ -38,31 +34,15 @@ class GcodestatPrintTimeEstimatorPlugin(octoprint.plugin.StartupPlugin):
     ##~~ queuing gcode hook
 
     def updateEstimation(self, comm_instance, phase, cmd, cmd_type, gcode, *args, **kwargs):
-        if gcode != "M117" or self._estimator is None:
+        if gcode != "M73" or self._estimator is None:
             return
 
-        self._logger.debug("gcodestatEstimator: M117 found")
+        self._logger.debug("gcodestatEstimator: M73 found")
 
         mw = self.pw.match(cmd)
-        md = self.pd.match(cmd)
-        mh = self.ph.match(cmd)
-        mm = self.pm.match(cmd)
-        ms = self.ps.match(cmd)
         if mw:
-            self._estimator.estimated_time = float(mw.group(2))*7*24*60*60 + float(mw.group(3))*24*60*60 + float(mw.group(4))*60*60 + float(mw.group(5))*60 + float(mw.group(6))
+            self._estimator.estimated_time = float(mw.group(2))*60 
             self._estimator.percentage_done = float(mw.group(1))
-        elif md:
-            self._estimator.estimated_time = float(mw.group(2))*24*60*60 + float(md.group(3))*60*60 + float(md.group(4))*60 + float(md.group(5))
-            self._estimator.percentage_done = float(md.group(1))
-        elif mh:
-            self._estimator.estimated_time = float(mh.group(2))*60*60 + float(mh.group(3))*60 + float(mh.group(4))
-            self._estimator.percentage_done = float(mh.group(1))
-        elif mm:
-            self._estimator.estimated_time = float(mm.group(2))*60 + float(mm.group(3))
-            self._estimator.percentage_done = float(mm.group(1))
-        elif ms:
-            self._estimator.estimated_time = float(ms.group(2))
-            self._estimator.percentage_done = float(ms.group(1))
         else :
             self._logger.debug("gcodestatEstimator: NO MATCH!")
             return
