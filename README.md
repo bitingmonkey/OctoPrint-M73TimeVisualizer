@@ -1,10 +1,10 @@
-# Estimator for OctoPrint that uses data embedded in gcode by [gcodestat](https://github.com/arhi/gcodestat)
+# Estimator for OctoPrint that uses data embedded in gcode by Prusa firmware (https://github.com/prusa3d/Prusa-Firmware/releases)
 
 ## Requirement
  * Needs octoprint 1.3.9 that implements
    * http://docs.octoprint.org/en/maintenance/plugins/hooks.html#octoprint-filemanager-analysis-factory
    * http://docs.octoprint.org/en/maintenance/plugins/hooks.html#octoprint-printer-estimation-factory
- * Needs M117 codes in your G-Code to look like (if you do not change --m117_format option in gcodestat default output will work perfectly):
+ * Needs M73 codes in your G-Code to look like (if you do not change --m117_format option in gcodestat default output will work perfectly):
    * M117 100% Remaining 1 weeks 6 days ( 07:54:19 )
    * M117 100% Remaining 4 days ( 02:04:19 )
    * M117 35% Remaining ( 12:43:04 )
