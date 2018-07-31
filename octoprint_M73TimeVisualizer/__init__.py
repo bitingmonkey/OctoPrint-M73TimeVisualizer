@@ -11,7 +11,7 @@ from octoprint.printer.estimation import PrintTimeEstimator
 
 class M73ProgressTimeVisualizer(PrintTimeEstimator):
     def __init__(self, job_type,printer, file_manager, logger, current_history):
-        PrintTimeEstimator.__init__(self, job_type)
+        super(M73ProgressTimeVisualizer, self).__init__(job_type)
         self._job_type = job_type
         self.estimated_time = 0
         self.percentage_done = -1
