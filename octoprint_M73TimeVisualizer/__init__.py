@@ -18,6 +18,7 @@ class M73ProgressTimeVisualizer(PrintTimeEstimator):
     def estimate(self, *args, **kwargs):
         if self._job_type != "local" or self.percentage_done == -1:
             return PrintTimeEstimator.estimate(self, *args, **kwargs)
+        self._logger.debug("M73Progress estimate: {}sec".format(self._estimator.estimated_time))
         return self.estimated_time, "estimate"
 
 class M73ProgressTimeVisualizerPlugin(octoprint.plugin.StartupPlugin):
@@ -37,14 +38,11 @@ class M73ProgressTimeVisualizerPlugin(octoprint.plugin.StartupPlugin):
         if gcode != "M73" or self._estimator is None:
             return
 
-        self._logger.debug("M73Progress: M73 found")
-
         mw = self.pw.match(cmd)
         if mw:
             self._estimator.estimated_time = float(mw.group(2))*60 
             self._estimator.percentage_done = float(mw.group(1))
         else :
-            self._logger.debug("M73Progress: NO MATCH!")
             return
 
         self._logger.debug("M73Progress: {}% {}sec".format(self._estimator.percentage_done, self._estimator.estimated_time))
@@ -67,7 +65,7 @@ class M73ProgressTimeVisualizerPlugin(octoprint.plugin.StartupPlugin):
 
                 # version check: github repository
                 type="github_release",
-                user="arhi",
+                user="bitingmonkey",
                 repo="OctoPrint-M73Progress",
                 current=self._plugin_version,
 
