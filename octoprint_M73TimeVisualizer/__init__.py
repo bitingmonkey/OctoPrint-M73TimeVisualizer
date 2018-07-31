@@ -2,6 +2,7 @@
 from __future__ import absolute_import
 
 import octoprint.plugin
+import logging
 
 import re
 
@@ -9,16 +10,17 @@ from octoprint.printer.estimation import PrintTimeEstimator
 
 
 class M73ProgressTimeVisualizer(PrintTimeEstimator):
-    def __init__(self, job_type):
+    def __init__(self, job_type,printer, file_manager, logger, current_history):
         PrintTimeEstimator.__init__(self, job_type)
         self._job_type = job_type
         self.estimated_time = 0
         self.percentage_done = -1
+        self._logger = logger
 
     def estimate(self, *args, **kwargs):
         # if self._job_type != "local" or self.percentage_done == -1:
         #     return PrintTimeEstimator.estimate(self, *args, **kwargs)
-        # self._logger.debug("M73Progress estimate: {}sec".format(self._estimator.estimated_time))
+        self._logger.debug("M73Progress estimate: {}sec".format(self._estimator.estimated_time))
         return 6 * 60 * 60, "estimate"
 
 class M73ProgressTimeVisualizerPlugin(octoprint.plugin.StartupPlugin):
