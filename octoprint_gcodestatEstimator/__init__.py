@@ -8,7 +8,7 @@ import re
 from octoprint.printer.estimation import PrintTimeEstimator
 
 
-class GcodestatPrintTimeEstimator(PrintTimeEstimator):
+class M73ProgressTimeVisualizer(PrintTimeEstimator):
     def __init__(self, job_type):
         PrintTimeEstimator.__init__(self, job_type)
         self._job_type = job_type
@@ -20,7 +20,7 @@ class GcodestatPrintTimeEstimator(PrintTimeEstimator):
             return PrintTimeEstimator.estimate(self, *args, **kwargs)
         return self.estimated_time, "estimate"
 
-class GcodestatPrintTimeEstimatorPlugin(octoprint.plugin.StartupPlugin):
+class M73ProgressTimeVisualizerPlugin(octoprint.plugin.StartupPlugin):
 
     pw = re.compile('M73 P([0-9]+) R([0-9]+)')
 
@@ -28,7 +28,7 @@ class GcodestatPrintTimeEstimatorPlugin(octoprint.plugin.StartupPlugin):
         self._estimator = None
 
     def on_after_startup(self):
-        self._logger.info("Started up gcodestatEstimator")
+        self._logger.info("Started up M73Progress")
 
 
     ##~~ queuing gcode hook
@@ -37,23 +37,23 @@ class GcodestatPrintTimeEstimatorPlugin(octoprint.plugin.StartupPlugin):
         if gcode != "M73" or self._estimator is None:
             return
 
-        self._logger.debug("gcodestatEstimator: M73 found")
+        self._logger.debug("M73Progress: M73 found")
 
         mw = self.pw.match(cmd)
         if mw:
             self._estimator.estimated_time = float(mw.group(2))*60 
             self._estimator.percentage_done = float(mw.group(1))
         else :
-            self._logger.debug("gcodestatEstimator: NO MATCH!")
+            self._logger.debug("M73Progress: NO MATCH!")
             return
 
-        self._logger.debug("gcodestatEstimator: {}% {}sec".format(self._estimator.percentage_done, self._estimator.estimated_time))
+        self._logger.debug("M73Progress: {}% {}sec".format(self._estimator.percentage_done, self._estimator.estimated_time))
 
     ##~~ estimator factory hook
 
     def estimator_factory(self):
         def factory(*args, **kwargs):
-            self._estimator = GcodestatPrintTimeEstimator(*args, **kwargs)
+            self._estimator = M73ProgressTimeVisualizer(*args, **kwargs)
             return self._estimator
         return factory
 
@@ -68,7 +68,7 @@ class GcodestatPrintTimeEstimatorPlugin(octoprint.plugin.StartupPlugin):
                 # version check: github repository
                 type="github_release",
                 user="arhi",
-                repo="OctoPrint-gcodestatEstimator",
+                repo="OctoPrint-M73Progress",
                 current=self._plugin_version,
 
                 # update method: pip
@@ -77,7 +77,7 @@ class GcodestatPrintTimeEstimatorPlugin(octoprint.plugin.StartupPlugin):
         )
 
 
-__plugin_implementation__ = GcodestatPrintTimeEstimatorPlugin()
+__plugin_implementation__ = M73ProgressTimeVisualizerPlugin()
 __plugin_hooks__ = {
     "octoprint.comm.protocol.gcode.queuing": __plugin_implementation__.updateEstimation,
     "octoprint.printer.estimation.factory": __plugin_implementation__.estimator_factory,
