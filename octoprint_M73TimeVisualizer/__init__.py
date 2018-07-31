@@ -16,8 +16,8 @@ class M73ProgressTimeVisualizer(PrintTimeEstimator):
         self.percentage_done = -1
 
     def estimate(self, *args, **kwargs):
-        if self._job_type != "local" or self.percentage_done == -1:
-            return PrintTimeEstimator.estimate(self, *args, **kwargs)
+        # if self._job_type != "local" or self.percentage_done == -1:
+        #     return PrintTimeEstimator.estimate(self, *args, **kwargs)
         self._logger.debug("M73Progress estimate: {}sec".format(self._estimator.estimated_time))
         return self.estimated_time, "estimate"
 
