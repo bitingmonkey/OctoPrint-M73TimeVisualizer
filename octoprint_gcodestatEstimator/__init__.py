@@ -72,7 +72,7 @@ class M73ProgressTimeVisualizerPlugin(octoprint.plugin.StartupPlugin):
                 current=self._plugin_version,
 
                 # update method: pip
-                pip="https://github.com/arhi/OctoPrint-gcodestatEstimator/archive/{target_version}.zip"
+                pip="https://github.com/bitingmonkey/OctoPrint-M73TimeVisualizer/archive/{target_version}.zip"
             )
         )
 
