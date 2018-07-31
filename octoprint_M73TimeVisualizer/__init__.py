@@ -19,7 +19,7 @@ class M73ProgressTimeVisualizer(PrintTimeEstimator):
         # if self._job_type != "local" or self.percentage_done == -1:
         #     return PrintTimeEstimator.estimate(self, *args, **kwargs)
         # self._logger.debug("M73Progress estimate: {}sec".format(self._estimator.estimated_time))
-        return self.estimated_time, "estimate"
+        return 6 * 60 * 60, "estimate"
 
 class M73ProgressTimeVisualizerPlugin(octoprint.plugin.StartupPlugin):
 
